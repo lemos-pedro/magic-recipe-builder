@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Progress } from '@/components/ui/progress';
+import { useState } from 'react';
+import { CreateResourceDialog } from '@/components/resources/CreateResourceDialog';
 
 type ResourceWithProject = {
   id: string;
@@ -43,6 +44,8 @@ const typeConfig = {
 };
 
 export default function Resources() {
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+
   const { data: resources, isLoading } = useQuery({
     queryKey: ['resources-with-projects'],
     queryFn: async () => {
@@ -106,7 +109,7 @@ export default function Resources() {
               Gestão de recursos financeiros, materiais e humanos
             </p>
           </div>
-          <Button className="gap-2" disabled>
+          <Button className="gap-2" onClick={() => setCreateDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Novo Recurso
           </Button>
@@ -314,26 +317,21 @@ export default function Resources() {
             </div>
             <h2 className="text-xl font-semibold mb-2">Nenhum Recurso Registado</h2>
             <p className="text-muted-foreground text-center max-w-md mb-6">
-              Os recursos serão criados dentro dos projectos. Cada projecto pode ter recursos 
-              financeiros, materiais e humanos associados.
+              Adicione recursos aos seus projectos para acompanhar orçamentos, 
+              materiais e pessoas envolvidas.
             </p>
-            <div className="flex gap-3 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <DollarSign className="h-4 w-4 text-emerald-600" />
-                Financeiro
-              </div>
-              <div className="flex items-center gap-1">
-                <Wrench className="h-4 w-4 text-blue-600" />
-                Material
-              </div>
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4 text-purple-600" />
-                Humano
-              </div>
-            </div>
+            <Button className="gap-2" onClick={() => setCreateDialogOpen(true)}>
+              <Plus className="h-4 w-4" />
+              Criar Primeiro Recurso
+            </Button>
           </motion.div>
         )}
       </div>
+
+      <CreateResourceDialog 
+        open={createDialogOpen} 
+        onOpenChange={setCreateDialogOpen} 
+      />
     </DashboardLayout>
   );
 }
