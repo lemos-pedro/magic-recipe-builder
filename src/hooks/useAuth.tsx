@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         if (session?.user) {
           try {
-            const { data } = await supabase
+            const { data, error } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', session.user.id)
@@ -51,9 +51,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             
             if (mounted && data) {
               setProfile(data);
+            } else if (error && error.code !== 'PGRST116') {
+              // PGRST116 = no rows found, which is expected for new users
+              console.error('Erro ao buscar perfil:', error);
             }
           } catch (error) {
-            console.error('Error fetching profile:', error);
+            console.error('Erro ao buscar perfil:', error);
           }
         } else {
           setProfile(null);
@@ -78,16 +81,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .select('*')
           .eq('id', session.user.id)
           .single()
-          .then(({ data }) => {
+          .then(({ data, error }) => {
             if (mounted && data) {
               setProfile(data);
+            } else if (error && error.code !== 'PGRST116') {
+              console.error('Erro ao buscar perfil:', error);
             }
             if (mounted) {
               setLoading(false);
             }
           })
           .catch((error) => {
-            console.error('Error fetching profile:', error);
+            console.error('Erro ao buscar perfil:', error);
             if (mounted) {
               setLoading(false);
             }
