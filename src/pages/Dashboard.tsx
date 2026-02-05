@@ -19,16 +19,42 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
+interface DashboardStats {
+  projects: number;
+  tasks: number;
+  teams: number;
+  progress: number;
+}
+
+interface Project {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  end_date: string | null;
+  location: string | null;
+  project_templates?: { color: string };
+}
+
+interface Task {
+  id: string;
+  title: string;
+  project: string;
+  dueDate?: string;
+  priority: string;
+  status: string;
+}
+
 export default function Dashboard() {
   const { profile } = useAuth();
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<DashboardStats>({
     projects: 0,
     tasks: 0,
     teams: 0,
     progress: 0,
   });
-  const [projects, setProjects] = useState<any[]>([]);
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -71,12 +97,12 @@ export default function Dashboard() {
         progress: 75,
       });
 
-      setProjects(projectsData || []);
+      setProjects((projectsData || []) as Project[]);
       setTasks(
-        (tasksData || []).map((t: any) => ({
+        (tasksData || []).map((t) => ({
           id: t.id,
           title: t.title,
-          project: t.projects?.name || 'Sem projecto',
+          project: (t as any).projects?.name || 'Sem projecto',
           dueDate: t.due_date ? new Date(t.due_date).toLocaleDateString('pt-AO') : undefined,
           priority: t.priority,
           status: t.status,
@@ -223,11 +249,11 @@ export default function Dashboard() {
                 <ProjectCard
                   key={project.id}
                   name={project.name}
-                  description={project.description}
+                  description={project.description || ''}
                   status={project.status}
                   progress={Math.floor(Math.random() * 100)}
                   dueDate={project.end_date ? new Date(project.end_date).toLocaleDateString('pt-AO') : undefined}
-                  location={project.location}
+                  location={project.location || undefined}
                   templateColor={project.project_templates?.color}
                   teamMembers={[{ name: 'J' }, { name: 'M' }]}
                   delay={0.1 + i * 0.05}
