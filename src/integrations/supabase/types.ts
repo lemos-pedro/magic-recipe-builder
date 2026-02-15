@@ -366,25 +366,37 @@ export type Database = {
       }
       team_members: {
         Row: {
+          email: string | null
           id: string
           joined_at: string
+          name: string | null
+          phone: string | null
+          position: string | null
           role: Database["public"]["Enums"]["app_role"]
           team_id: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
+          email?: string | null
           id?: string
           joined_at?: string
+          name?: string | null
+          phone?: string | null
+          position?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           team_id: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
+          email?: string | null
           id?: string
           joined_at?: string
+          name?: string | null
+          phone?: string | null
+          position?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           team_id?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
