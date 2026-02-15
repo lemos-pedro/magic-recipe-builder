@@ -6,8 +6,8 @@ export const STRIPE_PLANS = {
     name: 'Básico',
     description: 'Para pequenas equipas',
     price: 12000, // 12.000 AOA per user
-    priceId: 'price_1SxArkFxWGAIH3NjzXxlmk7Y',
-    productId: 'prod_Tv0tsFmy8S2qyY',
+    priceId: 'price_1SxXtLCRH7znZWWCGWrqLVhu',
+    productId: 'prod_TvOghdNYTOm1Cw',
     popular: false,
     features: [
       'Até 3 projectos',
@@ -30,8 +30,8 @@ export const STRIPE_PLANS = {
     name: 'Profissional',
     description: 'Para equipas médias',
     price: 24000, // 24.000 AOA per user
-    priceId: 'price_1SxAtGFxWGAIH3Nj8osZT8pQ',
-    productId: 'prod_Tv0vGzZXyKzPmq',
+    priceId: 'price_1SxXvPCRH7znZWWChb1ZPTRO',
+    productId: 'prod_TvOibiA70X0qb5',
     popular: true,
     features: [
       'Projectos ilimitados',
@@ -55,10 +55,10 @@ export const STRIPE_PLANS = {
     id: 'enterprise',
     name: 'Enterprise',
     description: 'Para grandes organizações',
-    price: 48000, // 48.000 AOA per user
+    price: null, // Sob consulta
     popular: false,
-    priceId: 'price_1SxAtzFxWGAIH3NjP8SC016i',
-    productId: 'prod_Tv0vx6GeOAeqKC',
+    priceId: null, // Sem checkout - contacto directo
+    productId: null,
     features: [
       'Tudo ilimitado',
       'Membros ilimitados',
@@ -94,7 +94,8 @@ export const getPlanByPriceId = (priceId: string): Plan | null => {
   return plan || null;
 };
 
-export const formatPrice = (price: number, perUser = true): string => {
+export const formatPrice = (price: number | null, perUser = true): string => {
+  if (price === null) return 'Sob consulta';
   const formatted = new Intl.NumberFormat('pt-AO', {
     style: 'currency',
     currency: 'AOA',
