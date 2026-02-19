@@ -25,11 +25,6 @@ type TeamWithMembers = {
     email: string | null;
     phone: string | null;
     position: string | null;
-    profiles: {
-      display_name: string | null;
-      email: string;
-      avatar_url: string | null;
-    } | null;
   }[];
 };
 
@@ -42,10 +37,9 @@ const roleColors = {
 const roleLabels = { admin: 'Admin', manager: 'Gestor', member: 'Membro' };
 
 function getMemberDisplay(member: TeamWithMembers['team_members'][0]) {
-  const displayName = member.name || member.profiles?.display_name || member.email || member.profiles?.email || 'Sem nome';
-  const displayEmail = member.email || member.profiles?.email || '';
-  const avatarUrl = member.profiles?.avatar_url || undefined;
-  return { displayName, displayEmail, avatarUrl };
+  const displayName = member.name || member.email || 'Sem nome';
+  const displayEmail = member.email || '';
+  return { displayName, displayEmail };
 }
 
 export default function Teams() {
@@ -54,7 +48,7 @@ export default function Teams() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('teams')
-        .select(`*, projects(name), team_members(id, role, user_id, name, email, phone, position, profiles:user_id(display_name, email, avatar_url))`)
+        .select(`*, projects(name), team_members(id, role, user_id, name, email, phone, position)`)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data as unknown as TeamWithMembers[];
@@ -147,12 +141,12 @@ export default function Teams() {
                       <div className="space-y-3">
                         {team.team_members.map((member) => {
                           const RoleIcon = roleIcons[member.role];
-                          const { displayName, displayEmail, avatarUrl } = getMemberDisplay(member);
+                          const { displayName, displayEmail } = getMemberDisplay(member);
                           return (
                             <div key={member.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                               <div className="flex items-center gap-3 min-w-0">
                                 <Avatar className="h-9 w-9 shrink-0">
-                                  <AvatarImage src={avatarUrl} />
+                                  <AvatarImage src={undefined} />
                                   <AvatarFallback className="bg-primary/10 text-primary text-xs">
                                     {displayName.charAt(0).toUpperCase()}
                                   </AvatarFallback>
