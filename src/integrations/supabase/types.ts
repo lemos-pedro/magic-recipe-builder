@@ -484,6 +484,7 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
       is_project_member: { Args: { _project_id: string }; Returns: boolean }
       is_task_assignee: { Args: { _task_id: string }; Returns: boolean }
+      is_team_creator: { Args: { _team_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "manager" | "member"
